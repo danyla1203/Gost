@@ -15,30 +15,38 @@ type Response struct {
 }
 
 type App struct {
-	handlers map[string]func(request Request, response Response)
+	handlers    map[string]func(request Request, response Response)
+	middlewares map[string]func(request Request, response Response)
 }
 
 func (app App) Get(path string, handler func(request Request, response Response)) {
 	app.handlers[path] = handler
 }
+func (app App) Use(path string, handler func(request Request, response Response)) {
+	app.middlewares[path] = handler
+}
 
 func MakeApp() App {
-	app := App{handlers: map[string]func(request Request, response Response){}}
+	//init empty maps
+	app := App{
+		handlers:    map[string]func(request Request, response Response){},
+		middlewares: map[string]func(request Request, response Response){},
+	}
 	return app
 }
 
 func (app App) ServeHTTP(socket http.ResponseWriter, request *http.Request) {
 	splitedURI := strings.Split(request.RequestURI, "/")[1:]
-	for key, value := range app.handlers {
-		splitedPath := strings.Split(key, "/")[1:]
+	for handlerPattern, handlerFunc := range app.handlers {
+		splitedPattern := strings.Split(handlerPattern, "/")[1:]
 		//check path is matching pattern
-		isSuitable := checkPath(splitedURI, splitedPath)
+		isSuitable := checkPath(splitedURI, splitedPattern)
 		if isSuitable {
-			valuesFromUri := getValuesFromUri(splitedURI, splitedPath)
+			valuesFromUri := getValuesFromUri(splitedURI, splitedPattern)
 			//create own request, response struct
 			userRequest := Request{request, valuesFromUri}
 			userResponse := Response{socket}
-			value(userRequest, userResponse)
+			handlerFunc(userRequest, userResponse)
 			return
 		}
 	}
