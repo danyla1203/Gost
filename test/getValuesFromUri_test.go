@@ -1,6 +1,7 @@
-package lib
+package test
 
 import (
+	. "../gost"
 	"reflect"
 	"testing"
 )
@@ -9,7 +10,7 @@ func TestGetValuesFromUri(t *testing.T) {
 	uri := []string{"user", "12"}
 	pattern := []string{"user", ":user_id"}
 
-	valuesFromUri := getValuesFromUri(uri, pattern)
+	valuesFromUri := GetValuesFromUri(uri, pattern)
 	expectedValues := map[string]int{"user_id": 12}
 	t.Log("test uri =", uri, " pattern =", pattern)
 	if !reflect.DeepEqual(valuesFromUri, expectedValues) {

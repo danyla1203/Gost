@@ -1,10 +1,13 @@
-package lib
+package test
 
-import "testing"
+import (
+	. "../gost"
+	"testing"
+)
 
 func test(testModule *testing.T, uri []string, pattern []string) func(toBe bool) {
 	testModule.Log("test uri =", uri, " pattern =", pattern)
-	result := checkPath(uri, pattern)
+	result := CheckPath(uri, pattern)
 	return func(toBe bool) {
 		if result != toBe {
 			testModule.Error("must be", toBe, "then got", result)
