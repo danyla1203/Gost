@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 )
@@ -41,6 +42,7 @@ func (app App) ServeHTTP(socket http.ResponseWriter, request *http.Request) {
 	//get handler and matched pattern
 	handler, pattern := GetHandler(app.handlers, splitedURI)
 	if handler == nil {
+		fmt.Fprint(socket, "Fuck, it's 404. Try another url, dude")
 		return
 	}
 	//get vars from uri by pattern
@@ -53,7 +55,7 @@ func (app App) ServeHTTP(socket http.ResponseWriter, request *http.Request) {
 		UrlParts: valuesFromUri,
 	}
 	userResponse := &Response{socket}
-	//execute middlewares
+	//execute middlewares and handler
 	for _, callback := range middlewares {
 		callback(userRequest, userResponse)
 	}
