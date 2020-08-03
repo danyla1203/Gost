@@ -1,13 +1,14 @@
 package lib
 
 import (
+	"reflect"
 	"regexp"
 )
 
 func CheckPath(uri []string, path []string) bool {
 	// if uri == "/" and path == "/"
-	if len(uri) == 1 && len(uri[0]) == 0 && len(path) == 1 && len(path[0]) == 0 {
-		return true
+	if len(path) == 1 && len(path[0]) == 0 {
+		return reflect.DeepEqual(path, uri)
 	}
 	if len(uri) != len(path) {
 		return false
