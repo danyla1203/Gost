@@ -16,6 +16,11 @@ type Request struct {
 type Response struct {
 	http.ResponseWriter
 }
+
+func (res Response) SendFile(path string) {
+	fmt.Fprint(res, GetFile("/assets/"+path))
+}
+
 type handlerCallback func(r *Request, res *Response)
 
 type App struct {
@@ -82,7 +87,7 @@ func (app App) ServeHTTP(socket http.ResponseWriter, request *http.Request) {
 	//handle static, if first part of request uri match static dir name
 	//-> try to get file by second part of request uri
 	if splitedURI[0] == app.staticDirName && len(splitedURI) > 1 {
-		fmt.Fprint(socket, GetFile(app.staticDirName, splitedURI[1]))
+		fmt.Fprint(socket, GetFile("/"+app.staticDirName+"/"+splitedURI[1]))
 		return
 	}
 	//get handler and matched pattern
