@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func getFile(dirName, fileName string) string {
+func GetFile(dirName, fileName string) string {
 	file, err := ioutil.ReadFile(dirName + "/" + fileName)
 	if err != nil {
 		log.Fatal(err)
