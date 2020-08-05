@@ -4,12 +4,12 @@ import (
 	"strings"
 )
 
-func GetMiddlewares(middlewares handlersMap, uri []string) []handlerCallback {
+func GetMiddlewares(middlewares []Middleware, uri []string) []handlerCallback {
 	selectedMiddlewares := []handlerCallback{}
-	for middlewarePattern, callback := range middlewares {
-		splitedMiddlewarePattern := strings.Split(middlewarePattern, "/")[1:]
+	for _, middlewareObj := range middlewares {
+		splitedMiddlewarePattern := strings.Split(middlewareObj.path, "/")[1:]
 		if IsMiddleware(uri, splitedMiddlewarePattern) {
-			selectedMiddlewares = append(selectedMiddlewares, callback)
+			selectedMiddlewares = append(selectedMiddlewares, middlewareObj.callback)
 		}
 	}
 	return selectedMiddlewares
