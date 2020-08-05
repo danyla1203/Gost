@@ -35,7 +35,7 @@ type Handler struct {
 	handler handlerCallback
 }
 
-func (app App) Get(path string, handler handlerCallback) {
+func (app *App) Get(path string, handler handlerCallback) {
 	handlerObj := Handler{
 		method:  "GET",
 		path:    path,
@@ -43,7 +43,7 @@ func (app App) Get(path string, handler handlerCallback) {
 	}
 	app.handlers = append(app.handlers, handlerObj)
 }
-func (app App) Post(path string, handler handlerCallback) {
+func (app *App) Post(path string, handler handlerCallback) {
 	handlerObj := Handler{
 		method:  "POST",
 		path:    path,
@@ -51,7 +51,7 @@ func (app App) Post(path string, handler handlerCallback) {
 	}
 	app.handlers = append(app.handlers, handlerObj)
 }
-func (app App) Use(path string, handler handlerCallback) {
+func (app *App) Use(path string, handler handlerCallback) {
 	middleware := Middleware{
 		path:     path,
 		callback: handler,
