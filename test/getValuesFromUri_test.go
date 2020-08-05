@@ -8,7 +8,7 @@ import (
 
 func TestGetValuesFromUri(t *testing.T) {
 	uri := []string{"user", "12"}
-	pattern := []string{"user", ":user_id"}
+	pattern := "/user/:user_id"
 
 	valuesFromUri := GetValuesFromUri(uri, pattern)
 	expectedValues := map[string]int{"user_id": 12}
