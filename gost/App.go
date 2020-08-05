@@ -86,7 +86,7 @@ func (app App) ServeHTTP(socket http.ResponseWriter, request *http.Request) {
 		return
 	}
 	//get handler and matched pattern
-	handler, err := GetHandler(app.handlers, splitedURI)
+	handler, err := GetHandler(app.handlers, splitedURI, request.Method)
 	if err != nil {
 		fmt.Fprint(socket, "Fuck, it's 404. Try another url, dude")
 		return
