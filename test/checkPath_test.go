@@ -16,13 +16,13 @@ func test(testModule *testing.T, uri []string, pattern []string) func(toBe bool)
 }
 
 func TestWithHardcodedPattern(t *testing.T) {
-	uri := []string{"/"}
-	pattern := []string{"/"}
+	uri := []string{""}
+	pattern := []string{""}
 	test(t, uri, pattern)(true)
 
-	uri = []string{"/docs"}
-	pattern = []string{"/docs"}
-	test(t, uri, pattern)(true)
+	uri = []string{"docs", "12"}
+	pattern = []string{"docs"}
+	test(t, uri, pattern)(false)
 }
 
 func TestWithRegexpAndVars(t *testing.T) {
@@ -31,11 +31,11 @@ func TestWithRegexpAndVars(t *testing.T) {
 	test(t, uri, pattern)(true)
 
 	uri = []string{"sdklfj234", "22"}
-	pattern = []string{".+", ":id"}
+	pattern = []string{"*", ":id"}
 	test(t, uri, pattern)(true)
 
 	uri = []string{"randWOrd", "22", "randWord"}
-	pattern = []string{".+", ":number", ".+"}
+	pattern = []string{"*", ":number", "*"}
 	test(t, uri, pattern)(true)
 }
 
