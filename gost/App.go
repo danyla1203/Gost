@@ -25,6 +25,17 @@ func (res Response) SendFile(path string) {
 	res.Header().Set("Content-Type", mimeType)
 	fmt.Fprint(res, file)
 }
+func (res *Response) SetCookie(name, value string) {
+	cookie := name + "=" + value + "; SameSite"
+	res.Header().Add("Set-Cookie", cookie)
+}
+func (req *Request) GetCookie(name string) *http.Cookie {
+	cookie, err := req.Cookie("name")
+	if err != nil {
+		log.Fatal("Miss cookie")
+	}
+	return cookie
+}
 
 type handlerCallback func(r *Request, res *Response)
 
