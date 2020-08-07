@@ -14,7 +14,7 @@ func CheckPath(uri []string, path []string) bool {
 		return false
 	}
 	for index, _ := range uri {
-		if path[index][0:1] == ":" {
+		if path[index][0:1] == ":" || path[index] == "*" {
 			continue
 		}
 
