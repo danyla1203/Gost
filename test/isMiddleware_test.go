@@ -20,6 +20,10 @@ func TestSimpMiddlewares(t *testing.T) {
 	pattern := []string{"article"}
 	testMiddleware(t, uri, pattern)(true)
 
+	uri = []string{"user", "1234"}
+	pattern = []string{""}
+	testMiddleware(t, uri, pattern)(true)
+
 	uri = []string{"article", "admin", "1234"}
 	pattern = []string{"article", "admin"}
 	testMiddleware(t, uri, pattern)(true)
