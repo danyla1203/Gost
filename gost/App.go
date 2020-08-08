@@ -21,14 +21,14 @@ func (res Response) SendFile(path string) {
 	//TODO: Get correct mime type
 	file, mimeType := GetFile("/assets/" + path)
 	res.Header().Set("Content-Type", mimeType)
-	fmt.Fprint(res, file)
+	log.Fatal(fmt.Fprint(res, file))
 }
 func (res *Response) SetCookie(name, value string) {
 	cookie := name + "=" + value + "; SameSite"
 	res.Header().Add("Set-Cookie", cookie)
 }
 func (req *Request) GetCookie(name string) *http.Cookie {
-	cookie, err := req.Cookie("name")
+	cookie, err := req.Cookie(name)
 	if err != nil {
 		log.Fatal("Miss cookie")
 	}
@@ -106,13 +106,13 @@ func (app App) ServeHTTP(socket http.ResponseWriter, request *http.Request) {
 		//TODO: Get correct mime type
 		file, mimeType := GetFile("/" + app.staticDirName + "/" + splitedURI[1])
 		socket.Header().Set("Content-Type", mimeType)
-		fmt.Fprint(socket, file)
+		log.Fatal(fmt.Fprint(socket, file))
 		return
 	}
 	//get handler and matched pattern
 	handler, err := GetHandler(app.handlers, splitedURI, request.Method)
 	if err != nil {
-		fmt.Fprint(socket, "Fuck, it's 404. Try another url, dude")
+		log.Fatal(fmt.Fprint(socket, "Fuck, it's 404. Try another url, dude"))
 		return
 	}
 	//get vars from uri by pattern
