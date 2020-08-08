@@ -2,10 +2,8 @@ package lib
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -40,10 +38,9 @@ func (req *Request) GetCookie(name string) *http.Cookie {
 type handlerCallback func(r *Request, res *Response)
 
 type App struct {
-	handlers      []Handler
-	middlewares   []Middleware
-	staticDirName string
-	staticFiles   []os.FileInfo
+	Static
+	handlers    []Handler
+	middlewares []Middleware
 }
 
 type Middleware struct {
@@ -78,15 +75,6 @@ func (app *App) Use(path string, handler handlerCallback) {
 		callback: handler,
 	}
 	app.middlewares = append(app.middlewares, middleware)
-}
-func (app *App) Static(path string) {
-	dirFiles, err := ioutil.ReadDir("./" + path)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	app.staticDirName = path[1:]
-	app.staticFiles = dirFiles
 }
 
 func MakeApp() App {
