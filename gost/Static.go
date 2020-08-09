@@ -11,7 +11,7 @@ type Static struct {
 	staticFiles   []os.FileInfo
 }
 
-func (static *Static) ServeFile(path string) {
+func (static *Static) ServeDir(path string) {
 	dirFiles, err := ioutil.ReadDir("./" + path)
 	if err != nil {
 		log.Print(err)
