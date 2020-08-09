@@ -7,34 +7,6 @@ import (
 	"strings"
 )
 
-type Request struct {
-	*http.Request
-	UrlParts map[string]int
-	Body     map[string]string
-}
-type Response struct {
-	http.ResponseWriter
-}
-
-func (res Response) SendFile(path string) {
-	//by default, files to send must be placed in assets dir
-	//TODO: Get correct mime type
-	file, mimeType := GetFile("/assets/" + path)
-	res.Header().Set("Content-Type", mimeType)
-	log.Fatal(fmt.Fprint(res, file))
-}
-func (res *Response) SetCookie(name, value string) {
-	cookie := name + "=" + value + "; SameSite"
-	res.Header().Add("Set-Cookie", cookie)
-}
-func (req *Request) GetCookie(name string) *http.Cookie {
-	cookie, err := req.Cookie(name)
-	if err != nil {
-		log.Fatal("Miss cookie")
-	}
-	return cookie
-}
-
 type handlerCallback func(r *Request, res *Response)
 
 type App struct {
@@ -86,18 +58,6 @@ func MakeApp() App {
 	return app
 }
 
-func setParams(req *Request) {
-	err := req.ParseForm()
-	if err != nil {
-		log.Fatal("something wrong with read data from body")
-	}
-	reducedMap := map[string]string{}
-	for key, value := range req.PostForm {
-		reducedMap[key] = value[0]
-	}
-	req.Body = reducedMap
-}
-
 func (app App) ServeHTTP(socket http.ResponseWriter, request *http.Request) {
 	splitedURI := strings.Split(request.RequestURI, "/")[1:]
 	//handle static, if first part of request uri match static dir name
@@ -106,7 +66,8 @@ func (app App) ServeHTTP(socket http.ResponseWriter, request *http.Request) {
 		//TODO: Get correct mime type
 		file, mimeType := GetFile("/" + app.staticDirName + "/" + splitedURI[1])
 		socket.Header().Set("Content-Type", mimeType)
-		log.Fatal(fmt.Fprint(socket, file))
+		socket.Header().Set("Cache-Control", "max-age=216000; must-revalidate")
+		fmt.Fprint(socket, file)
 		return
 	}
 	//get handler and matched pattern
@@ -125,7 +86,7 @@ func (app App) ServeHTTP(socket http.ResponseWriter, request *http.Request) {
 		UrlParts: valuesFromUri,
 	}
 	userResponse := &Response{socket}
-	setParams(userRequest)
+	userRequest.SetParams()
 	//execute middlewares and handler
 	for _, callback := range middlewares {
 		callback(userRequest, userResponse)
