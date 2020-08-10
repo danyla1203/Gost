@@ -76,17 +76,15 @@ func (app App) ServeHTTP(socket http.ResponseWriter, request *http.Request) {
 		log.Fatal(fmt.Fprint(socket, "Fuck, it's 404. Try another url, dude"))
 		return
 	}
-	//get vars from uri by pattern
+
 	valuesFromUri := GetValuesFromUri(splitedURI, handler.path)
-	//get all middlewares for current uri
 	middlewares := GetMiddlewares(app.middlewares, splitedURI)
-	//create modified req, resp objects
 	userRequest := &Request{
 		Request:  request,
 		UrlParts: valuesFromUri,
 	}
-	userResponse := &Response{socket}
 	userRequest.SetParams()
+	userResponse := &Response{socket}
 	//execute middlewares and handler
 	for _, callback := range middlewares {
 		callback(userRequest, userResponse)
