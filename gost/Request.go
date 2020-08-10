@@ -11,14 +11,6 @@ type Request struct {
 	Body     map[string]string
 }
 
-func (req *Request) GetCookie(name string) (*http.Cookie, error) {
-	cookie, err := req.Cookie(name)
-	if err != nil {
-		return nil, err
-	}
-	return cookie, nil
-}
-
 func (req *Request) SetParams() {
 	err := req.ParseForm()
 	if err != nil {
