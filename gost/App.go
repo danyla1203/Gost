@@ -58,6 +58,16 @@ func MakeApp() App {
 	return app
 }
 
+func parseCookies(cookies string) map[string]string {
+	splitedCookies := strings.Split(cookies, "; ")
+	cookiesMap := map[string]string{}
+	for _, cookie := range splitedCookies {
+		keyAndVal := strings.Split(cookie, "=")
+		cookiesMap[keyAndVal[0]] = keyAndVal[1]
+	}
+	return cookiesMap
+}
+
 func (app App) ServeHTTP(socket http.ResponseWriter, request *http.Request) {
 	splitedURI := strings.Split(request.RequestURI, "/")[1:]
 	//handle static, if first part of request uri match static dir name
@@ -78,10 +88,12 @@ func (app App) ServeHTTP(socket http.ResponseWriter, request *http.Request) {
 	}
 
 	valuesFromUri := GetValuesFromUri(splitedURI, handler.path)
+	cookies := parseCookies(request.Header.Get("Cookie"))
 	middlewares := GetMiddlewares(app.middlewares, splitedURI)
 	userRequest := &Request{
 		Request:  request,
 		UrlParts: valuesFromUri,
+		Cookies:  cookies,
 	}
 	userRequest.SetParams()
 	userResponse := &Response{socket}

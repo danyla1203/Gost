@@ -9,6 +9,7 @@ type Request struct {
 	*http.Request
 	UrlParts map[string]int
 	Body     map[string]string
+	Cookies  map[string]string
 }
 
 func (req *Request) SetParams() {
