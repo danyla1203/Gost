@@ -3,7 +3,6 @@ package lib
 import (
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 )
 
@@ -18,5 +17,6 @@ func GetFile(fileName string) (string, string) {
 		log.Fatal(err)
 		return "", ""
 	}
-	return string(file[:]), http.DetectContentType(file)
+	//TODO: how to get this fucking mime?
+	return string(file[:]), ""
 }
