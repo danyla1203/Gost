@@ -59,6 +59,9 @@ func MakeApp() App {
 }
 
 func parseCookies(cookies string) map[string]string {
+	if len(cookies) < 1 {
+		return map[string]string{}
+	}
 	splitedCookies := strings.Split(cookies, "; ")
 	cookiesMap := map[string]string{}
 	for _, cookie := range splitedCookies {
